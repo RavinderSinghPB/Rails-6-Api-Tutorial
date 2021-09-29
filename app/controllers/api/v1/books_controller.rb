@@ -15,8 +15,9 @@
             end
           
             def create
-              book = Book.new(book_params)
-          
+              author = Author.find_or_create_by(author_params)
+              book = Book.new(book_params.merge(author: author))
+              puts book_params
               if book.save
                 render json: book, status: :created
               else
@@ -35,7 +36,11 @@
             private
           
             def book_params
-              params.require(:book).permit(:title, :author)
+              params.require(:book).permit(:title)
+            end
+
+            def author_params
+              params.require(:author).permit(:author_id ,:first_name , :last_name)
             end
           
             def invalid_book
